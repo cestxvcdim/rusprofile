@@ -2,8 +2,21 @@ from okved import OKVED
 from rus_profile import RusProfile
 
 
+def short_num(number: str) -> str:
+    length = len(number)
+    if length < 4:
+        return number
+    if length < 7:
+        return number[:(length-3)] + 'K'
+    if length < 10:
+        return number[:(length-6)] + 'M'
+    if length < 13:
+        return number[:(length-9)] + 'B'
+    return number
+
+
 def main(finance_revenue_from: str, finance_revenue_to: str, filename: str, regions: tuple[str, ...] | None = None):
-    if finance_revenue_from > finance_revenue_to:
+    if int(finance_revenue_from) > int(finance_revenue_to):
         print("Минимальная выручка не может быть больше максимальной.")
         return
 
@@ -52,5 +65,5 @@ if __name__ == '__main__':
     end = ""  # Например, "37670000"
     region = ("", "", "")  # Например, ("21",) - номер региона Чувашской Республики
     region_name = ""  # Например, "Чувашская Республика"
-    filename = f"{region_name} ({start[:3]}-{end[:3]})"
+    filename = f"{region_name} ({short_num(start)}-{short_num(end)})"
     main(finance_revenue_from=start, finance_revenue_to=end, regions=region, filename=filename)

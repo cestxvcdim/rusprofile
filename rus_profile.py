@@ -44,7 +44,9 @@ class RusProfile:
 
                 current_page += 1
 
-                time.sleep(8 + randint(1, 99) / 100)
+                if current_page <= page_count:
+                    time.sleep(8 + randint(1, 99) / 100)
+
             except Exception as e:
                 print(e)
 
