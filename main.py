@@ -1,0 +1,56 @@
+from okved import OKVED
+from rus_profile import RusProfile
+
+
+def main(finance_revenue_from: str, finance_revenue_to: str, filename: str, regions: tuple[str, ...] | None = None):
+    if finance_revenue_from > finance_revenue_to:
+        print("Минимальная выручка не может быть больше максимальной.")
+        return
+
+    payload = {
+        "sort": {
+            "field": "finance_revenue",
+            "order": "desc",
+        },
+        "state-1": True,
+        "okved_strict": True,
+        "okved": OKVED,
+        "finance_revenue_from": finance_revenue_from,
+        "finance_revenue_to": finance_revenue_to,
+        "page": "1",
+    }
+
+    if regions is not None:
+        payload["region"] = []
+        for region in regions:
+            payload["region"].append(region)
+
+    rp = RusProfile()
+    print("Идет получение данных...")
+    all_data = rp.get_data(payload)
+    print("Данные успешно получены.")
+
+    rp.save_data_to_json(all_data, filename)
+    rp.save_inn_to_excel(filename)
+
+    print(f"ИНН сохранены в '{filename}.xlsx'.")
+
+
+# "Республика Марий Эл": "12"
+# "Республика Татарстан": "16"
+# "Республика Чувашия": "21"
+# "Кировская область": "43"
+# "Московская область": "50"
+# "Нижегородская область": "52"
+# "Самарская область": "63"
+# "Ульяновская область": "73"
+# "Санкт-Петербург": "78"
+# "Москва": ("77", "97")
+
+if __name__ == '__main__':
+    start = ""  # Например, "20000000"
+    end = ""  # Например, "37670000"
+    region = ("", "", "")  # Например, ("21",) - номер региона Чувашской Республики
+    region_name = ""  # Например, "Чувашская Республика"
+    filename = f"{region_name} ({start[:3]}-{end[:3]})"
+    main(finance_revenue_from=start, finance_revenue_to=end, regions=region, filename=filename)
