@@ -1,4 +1,4 @@
-from okved import OKVED
+from okved_base import OKVED_ALL, get_okved_list
 from rus_profile import RusProfile
 
 
@@ -15,7 +15,13 @@ def short_num(number: str) -> str:
     return number
 
 
-def main(finance_revenue_from: str, finance_revenue_to: str, filename: str, regions: tuple[str, ...] | None = None):
+def main(
+        finance_revenue_from: str,
+        finance_revenue_to: str,
+        filename: str,
+        regions: tuple[str, ...] | None = None,
+        okved: list[str] = OKVED_ALL,
+):
     if int(finance_revenue_from) > int(finance_revenue_to):
         print("Минимальная выручка не может быть больше максимальной.")
         return
@@ -27,7 +33,7 @@ def main(finance_revenue_from: str, finance_revenue_to: str, filename: str, regi
         },
         "state-1": True,
         "okved_strict": True,
-        "okved": OKVED,
+        "okved": okved,
         "finance_revenue_from": finance_revenue_from,
         "finance_revenue_to": finance_revenue_to,
         "page": "1",
@@ -61,9 +67,16 @@ def main(finance_revenue_from: str, finance_revenue_to: str, filename: str, regi
 # "Москва": ("77", "97")
 
 if __name__ == '__main__':
-    start = ""  # Например, "20000000"
-    end = ""  # Например, "37670000"
-    region = ("", "", "")  # Например, ("21",) - номер региона Чувашской Республики
-    region_name = ""  # Например, "Чувашская Республика"
+    start = "100000000"  # Например, "20000000"
+    end = "500000000"  # Например, "37670000"
+    region = ("21",)  # Например, ("21",) - номер региона Чувашской Республики
+    okved = get_okved_list(3)
+    region_name = "Чувашская Республика"  # Например, "Чувашская Республика"
     filename = f"{region_name} ({short_num(start)}-{short_num(end)})"
-    main(finance_revenue_from=start, finance_revenue_to=end, regions=region, filename=filename)
+    main(
+        finance_revenue_from=start,
+        finance_revenue_to=end,
+        filename=filename,
+        regions=region,
+        okved=okved,
+    )
