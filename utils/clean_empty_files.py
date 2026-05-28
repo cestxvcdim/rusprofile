@@ -60,8 +60,3 @@ def clean_directory(directory: str, checker) -> None:
                     print(f"  Оставлен: {filename}")
             except Exception as e:
                 print(f"  Ошибка при обработке {filename}: {e}")
-
-
-if __name__ == "__main__":
-    clean_directory(EXCEL_DIR, is_empty_excel)
-    clean_directory(JSON_DIR, is_empty_json)

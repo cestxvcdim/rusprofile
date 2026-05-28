@@ -89,8 +89,3 @@ def move_files(region_name):
             skipped_count += 1
 
     print(f"\nГотово! Перемещено: {moved_count}, пропущено/с ошибками: {skipped_count}")
-
-
-if __name__ == "__main__":
-    region = "Чувашия"
-    move_files(region)
