@@ -4,7 +4,7 @@ import json
 import pandas as pd
 
 from random import randint
-from consts import SEARCH_URL, MAIN_PAGE_URL, HEADERS
+from src.consts import SEARCH_URL, MAIN_PAGE_URL, HEADERS
 
 
 class RusProfile:
@@ -55,12 +55,12 @@ class RusProfile:
 
     @staticmethod
     def save_data_to_json(data: list, filename: str) -> None:
-        with open(f'{filename}.json', 'w', encoding='utf-8') as f:
+        with open(f'company_json/{filename}.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
     @staticmethod
     def get_inn_list(filename: str) -> list[str]:
-        with open(f'{filename}.json', 'r', encoding='utf-8') as f:
+        with open(f'company_json/{filename}.json', 'r', encoding='utf-8') as f:
             loaded_data: dict = json.load(f)
             inn_list = []
             for page_data in loaded_data:
@@ -74,4 +74,4 @@ class RusProfile:
 
     def save_inn_to_excel(self, filename) -> None:
         df = pd.DataFrame({'ИНН': self.get_inn_list(filename)})
-        df.to_excel(f'{filename}.xlsx', index=False)
+        df.to_excel(f'company_excel/{filename}.xlsx', index=False)

@@ -1,18 +1,7 @@
-from okved_base import OKVED_ALL, get_okved_list
-from rus_profile import RusProfile
+import time
 
-
-def short_num(number: str) -> str:
-    length = len(number)
-    if length < 4:
-        return number
-    if length < 7:
-        return number[:(length-3)] + 'K'
-    if length < 10:
-        return number[:(length-6)] + 'M'
-    if length < 13:
-        return number[:(length-9)] + 'B'
-    return number
+from src.okved_base import get_okved_list, OKVED_LENGTH
+from src.script import run_script, short_num
 
 
 def main(
@@ -20,39 +9,16 @@ def main(
         finance_revenue_to: str,
         filename: str,
         regions: tuple[str, ...] | None = None,
-        okved: list[str] = OKVED_ALL,
+        okved_many: bool = False
 ):
-    if int(finance_revenue_from) > int(finance_revenue_to):
-        print("Минимальная выручка не может быть больше максимальной.")
-        return
-
-    payload = {
-        "sort": {
-            "field": "finance_revenue",
-            "order": "desc",
-        },
-        "state-1": True,
-        "okved_strict": True,
-        "okved": okved,
-        "finance_revenue_from": finance_revenue_from,
-        "finance_revenue_to": finance_revenue_to,
-        "page": "1",
-    }
-
-    if regions is not None:
-        payload["region"] = []
-        for region in regions:
-            payload["region"].append(region)
-
-    rp = RusProfile()
-    print("Идет получение данных...")
-    all_data = rp.get_data(payload)
-    print("Данные успешно получены.")
-
-    rp.save_data_to_json(all_data, filename)
-    rp.save_inn_to_excel(filename)
-
-    print(f"ИНН сохранены в '{filename}.xlsx'.")
+    if not okved_many:
+        run_script(finance_revenue_from, finance_revenue_to, filename, regions)
+    else:
+        for ki in range(OKVED_LENGTH):
+            print(f"{ki} KI цикл...")
+            run_script(finance_revenue_from, finance_revenue_to, f"{ki} {filename}", regions, okved=get_okved_list(ki))
+            if ki < OKVED_LENGTH - 1:
+                time.sleep(5)
 
 
 # "Республика Марий Эл": "12"
@@ -67,10 +33,9 @@ def main(
 # "Москва": ("77", "97")
 
 if __name__ == '__main__':
-    start = "100000000"  # Например, "20000000"
-    end = "500000000"  # Например, "37670000"
+    start = "10000000"  # Например, "20000000"
+    end = "50000000"  # Например, "37670000"
     region = ("21",)  # Например, ("21",) - номер региона Чувашской Республики
-    okved = get_okved_list(3)
     region_name = "Чувашская Республика"  # Например, "Чувашская Республика"
     filename = f"{region_name} ({short_num(start)}-{short_num(end)})"
     main(
@@ -78,5 +43,5 @@ if __name__ == '__main__':
         finance_revenue_to=end,
         filename=filename,
         regions=region,
-        okved=okved,
+        okved_many=True,
     )

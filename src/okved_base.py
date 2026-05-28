@@ -396,6 +396,7 @@ OKVED_DICTIONARY: dict[str, list[str]] = {
 }
 
 OKVED_KEYS = list(OKVED_DICTIONARY.keys())
+OKVED_LENGTH = len(OKVED_KEYS)
 
 
 def get_okved_list(key_number: int):
